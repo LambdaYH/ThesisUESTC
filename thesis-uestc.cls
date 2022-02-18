@@ -1038,6 +1038,9 @@ School: & \en@theschool \\
   \end{thebibliography}
 }
 
+% 调用 thesis-uestc.bst 时会自动将文献引用标注设为 numbers 样式（作为句子有效成分）
+\@namedef{bibstyle@thesis-uestc}{\bibstyle@numbers}
+
 \renewcommand\bibpreamble{%
   \thispagestyle{fancy}%
   \interlinepenalty=10000%
@@ -1073,11 +1076,11 @@ School: & \en@theschool \\
   }{
     \setlength{\labelsep}{3pt}
     \renewcommand{\bstlabelmark}{loo}
-    \bibliographystyle{gbt7714-numerical}
+    \bibliographystyle{thesis-uestc}
     \bibliography{#2}
     \setlength{\labelsep}{6pt}
   }{
-    \bibliographystyle{gbt7714-numerical}
+    \bibliographystyle{thesis-uestc}
     \bibliography{#2}
   }
 }
@@ -1110,7 +1113,7 @@ School: & \en@theschool \\
   \renewcommand{\bstlabelmark}{lo}
   \thispagestyle{fancy}
   \begin{spacing}{1.667}
-  \bibliographystyleaccomplish{gbt7714-numerical}
+  \bibliographystyleaccomplish{thesis-uestc}
   \bibliographyaccomplish{#1}
   \end{spacing}
   \renewcommand{\bibname}{\thesisbibname}
