@@ -764,9 +764,9 @@ UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
 \cline{2-2}
 & \\
 \cline{2-2}
-Author: & \en@theauthor \\
-\cline{2-2}
 Student ID: & \thestudentnumber \\
+\cline{2-2}
+Author: & \en@theauthor \\
 \cline{2-2}
 Supervisor: & \en@theadvisor \\
 \cline{2-2}
