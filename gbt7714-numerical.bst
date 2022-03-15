@@ -1,16 +1,16 @@
 %%
-%% This is file `variants/uestc/thesis-uestc.bst',
+%% This is file `gbt7714-numerical.bst',
 %% generated with the docstrip utility.
 %%
 %% The original source files were:
 %%
-%% gbt7714.dtx  (with options: `2015,numerical,uestc')
+%% gbt7714.dtx  (with options: `2015,numerical')
 %% -------------------------------------------------------------------
 %% GB/T 7714 BibTeX Style
 %% https://github.com/zepinglee/gbt7714-bibtex-style
 %% Version: 2021/12/08 v2.1.3
 %% -------------------------------------------------------------------
-%% Copyright (C) 2016--2022 by Zeping Lee <zepinglee AT gmail.com>
+%% Copyright (C) 2016—2021 by Zeping Lee <zepinglee AT gmail.com>
 %% -------------------------------------------------------------------
 %% This file may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License, either version 1.3c
@@ -37,6 +37,8 @@ INTEGERS {
   show.mark
   space.before.mark
   show.medium.type
+  slash.for.extraction
+  in.booktitle
   short.journal
   italic.journal
   bold.journal.volume
@@ -51,10 +53,6 @@ INTEGERS {
   show.note
   show.english.translation
   end.with.period
-}
-
-STRINGS {
-  component.part.label
 }
 
 FUNCTION {load.config}
@@ -75,8 +73,8 @@ FUNCTION {load.config}
   #1 'show.mark :=
   #0 'space.before.mark :=
   #1 'show.medium.type :=
-  "slash" 'component.part.label :=
-  "none" 'component.part.label :=
+  #1 'slash.for.extraction :=
+  #0 'in.booktitle :=
   #0 'short.journal :=
   #0 'italic.journal :=
   #0 'bold.journal.volume :=
@@ -384,22 +382,9 @@ FUNCTION {new.sentence}
 FUNCTION {new.slash}
 { output.state before.all =
     'skip$
-    { component.part.label "slash" =
+    { slash.for.extraction
         { after.slash 'output.state := }
-        { new.block
-          component.part.label "in" =
-            { entry.lang lang.en =
-                { "In: " output
-                  write$
-                  ""
-                  before.all 'output.state :=
-                }
-                'skip$
-              if$
-            }
-            'skip$
-          if$
-        }
+        { after.block 'output.state := }
       if$
     }
   if$
@@ -992,6 +977,14 @@ FUNCTION {format.series.vol.num.booktitle}
     { format.booktitle.vol.num }
   if$
   format.btitle
+  in.booktitle
+    { duplicate$ empty$ not entry.lang lang.en = and
+        { "In: " swap$ * }
+        'skip$
+      if$
+    }
+    'skip$
+  if$
 }
 
 FUNCTION {remove.period}
@@ -1167,17 +1160,6 @@ FUNCTION {format.publisher}
             }
           if$
         }
-      if$
-    }
-  if$
-}
-
-FUNCTION {format.address}
-{ address empty$ not
-    { address }
-    { location empty$ not
-        { location }
-        { "" }
       if$
     }
   if$
@@ -1763,48 +1745,6 @@ FUNCTION {incollection}
   fin.entry
 }
 
-FUNCTION {inproceedings}
-{ output.bibitem
-  output.translation
-  format.authors output
-  author format.key output
-  year.after.author
-    { period.after.author
-        'new.sentence
-        'skip$
-      if$
-      format.year "year" output.check
-    }
-    'skip$
-  if$
-  new.block
-  format.title "title" output.check
-  % "M" set.entry.mark
-  "C" set.entry.mark
-  format.mark "" output.after
-  % new.block
-  % format.translators output
-  new.slash
-  % format.editors output
-  % new.block
-  format.series.vol.num.booktitle "booktitle" output.check
-  % new.block
-  % format.edition output
-  % new.block
-  format.address output
-  year.after.author not
-    { format.year "year" output.check }
-    'skip$
-  if$
-  format.extracted.pages bbl.pages.colon output.after
-  format.urldate "" output.after
-  output.url
-  output.doi
-  new.block
-  format.note output
-  fin.entry
-}
-
 FUNCTION {periodical}
 { output.bibitem
   output.translation
@@ -2061,6 +2001,11 @@ FUNCTION {dataset}
 }
 
 FUNCTION {inbook} { book }
+
+FUNCTION {inproceedings}
+{ "C" set.entry.mark
+  incollection
+}
 
 FUNCTION {conference} { inproceedings }
 
