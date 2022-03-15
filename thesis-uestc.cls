@@ -96,7 +96,7 @@
 \RequirePackage{fancyhdr}
 \RequirePackage{titlesec}
 \RequirePackage{appendix}
-\RequirePackage{cite}
+\RequirePackage{gbt7714}
 \RequirePackage[normalem]{ulem}
 \RequirePackage{enumitem}
 
@@ -1044,15 +1044,36 @@ School: & \en@theschool \\
   \end{thebibliography}
 }
 
-\pretocmd{\bibliography}{
-  \thispagestyle{fancy}
-  \interlinepenalty=10000
-  \begin{spacing}{1.667}
-}{}{}
+% 调用 thesis-uestc.bst 时会自动将文献引用标注设为 numbers 样式（作为句子有效成分）
+\@namedef{bibstyle@thesis-uestc}{\bibstyle@numbers}
 
-\apptocmd{\bibliography}{
-  \end{spacing}
-}{}{}
+\renewcommand\bibpreamble{%
+  \thispagestyle{fancy}%
+  \interlinepenalty=10000%
+}
+\setlength\bibsep{0bp}
+\renewcommand\bibfont{\small\linespread{1.667}\selectfont}
+
+\AtBeginDocument{%
+  \def\thebibliography#1{%
+    \@isnumber{#1}{%
+      \ifnum\mb@biblabelwidth=0
+        % \@tempcnta\c@NAT@ctr %% changed here to c@NAT@ctr
+        \@tempcnta=#1\relax
+        \ifcontinuouslabels
+          \advance\@tempcnta\c@NAT@ctr
+          % \advance\@tempcnta#1%
+        \fi
+        \std@thebibliography{\@arabic\@tempcnta}%
+      \else
+        \std@thebibliography{\@arabic\mb@biblabelwidth}%
+        \global\mb@biblabelwidth 0
+      \fi
+    }{%
+      \std@thebibliography{#1}%
+    }%
+  }%
+}
 
 \newcommand{\bstlabelmark}{lo}
 \newcommand{\thesisloadbibliography}[2][]{
